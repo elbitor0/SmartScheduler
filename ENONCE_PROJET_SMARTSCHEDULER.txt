@@ -1,0 +1,1030 @@
+═══════════════════════════════════════════════════════════════════════════════
+                        UNIVERSITÉ - L2 INFORMATIQUE
+                 PROGRAMMATION LOGIQUE ET PAR CONTRAINTES
+
+                            PROJET HACKATHON
+
+                          SMARTSCHEDULER
+
+              Système intelligent de génération d'emplois du temps
+
+═══════════════════════════════════════════════════════════════════════════════
+
+
+1. CONTEXTE ET MOTIVATION
+═══════════════════════════════════════════════════════════════════════════════
+
+1.1 Présentation générale
+
+L'élaboration d'emplois du temps universitaires est un problème combinatoire
+complexe qui mobilise chaque année d'importantes ressources humaines dans les
+établissements d'enseignement supérieur. La génération manuelle d'emplois du
+temps cohérents, qui respectent simultanément les contraintes institutionnelles,
+les disponibilités des enseignants, les capacités des infrastructures et les
+préférences pédagogiques, représente un défi considérable.
+
+Ce problème relève de la classe des problèmes NP-complets et fait l'objet de
+recherches actives en intelligence artificielle et en recherche opérationnelle
+depuis plusieurs décennies. Les techniques de programmation logique et de
+programmation par contraintes se sont révélées particulièrement adaptées à ce
+type de problématique, permettant une modélisation déclarative élégante et une
+résolution efficace via des solveurs spécialisés.
+
+1.2 Objectif du projet
+
+Le projet SmartScheduler vise à développer un système complet et opérationnel de
+génération automatisée d'emplois du temps pour le niveau Licence 2 d'un
+département informatique. Ce système devra être capable de :
+
+- Modéliser les connaissances du domaine (cours, prérequis, incompatibilités)
+  en utilisant des techniques de programmation logique
+
+- Générer des emplois du temps valides respectant un ensemble de contraintes
+  dures (obligations) et souples (préférences)
+
+- Optimiser la qualité des solutions selon des critères multiples (réduction
+  des temps morts, équilibrage de la charge, satisfaction des préférences)
+
+- Planifier les parcours étudiants sur plusieurs semestres en tenant compte
+  des prérequis académiques
+
+Le projet s'inscrit dans une démarche de hackathon : les participants disposent
+de cinq jours pour concevoir, développer et présenter leur solution, en
+mobilisant les compétences acquises en programmation logique (Datalog, Prolog)
+et en programmation par contraintes (CSP, MiniZinc, OR-Tools).
+
+
+1.3 Intérêt pédagogique
+
+Ce projet permet d'appliquer concrètement les concepts théoriques abordés
+durant la semaine de formation :
+
+- Représentation de connaissances et raisonnement automatique
+- Algorithmes d'unification et de résolution
+- Modélisation déclarative de problèmes combinatoires
+- Comparaison de solveurs et analyse de performances
+- Planification automatique sous contraintes
+
+Au-delà des aspects techniques, le projet développe des compétences
+transversales : travail collaboratif, gestion de projet en temps contraint,
+documentation technique, et communication scientifique.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+2. MODALITÉS DE RÉALISATION
+═══════════════════════════════════════════════════════════════════════════════
+
+2.1 Organisation du travail
+
+Le projet est à réaliser en GROUPES DE 2 À 3 PERSONNES.
+
+La composition des groupes est libre et doit être communiquée au plus tard à
+la fin de la première demi-journée. Une répartition équitable des tâches au
+sein de chaque groupe est attendue et sera évaluée.
+
+2.2 Planning indicatif
+
+┌─────────┬────────────────────────────────────────────────────────────────┐
+│ JOUR 1  │ - Constitution des groupes                                     │
+│         │ - Prise en main des outils                                     │
+│         │ - Modélisation logique de la base de connaissances             │
+│         │ - Livrable : Base de faits et règles opérationnelle            │
+├─────────┼────────────────────────────────────────────────────────────────┤
+│ JOUR 2  │ - Implémentation de l'algorithme d'unification                 │
+│         │ - Requêtes avancées sur la base de connaissances               │
+│         │ - Tests et validation                                          │
+│         │ - Livrable : Moteur d'inférence fonctionnel                    │
+├─────────┼────────────────────────────────────────────────────────────────┤
+│ JOUR 3  │ - Modélisation CSP en MiniZinc                                 │
+│         │ - Génération d'emplois du temps basiques                       │
+│         │ - Interface Python-MiniZinc                                    │
+│         │ - Livrable : Générateur d'emploi du temps satisfaisant         │
+├─────────┼────────────────────────────────────────────────────────────────┤
+│ JOUR 4  │ - Optimisation multi-critères                                  │
+│         │ - Benchmark de solveurs                                        │
+│         │ - Amélioration des performances                                │
+│         │ - Livrable : Système optimisé et analysé                       │
+├─────────┼────────────────────────────────────────────────────────────────┤
+│ JOUR 5  │ - Planification de parcours (optionnel)                        │
+│         │ - Finalisation de l'interface utilisateur                      │
+│         │ - Rédaction du rapport                                         │
+│         │ - Préparation de la présentation                               │
+│         │ - Présentations orales (après-midi)                            │
+└─────────┴────────────────────────────────────────────────────────────────┘
+
+Ce planning est indicatif. Les groupes sont libres d'organiser leur travail
+différemment, à condition de respecter les échéances de rendu.
+
+2.3 Accompagnement
+
+- Des sessions de questions-réponses sont organisées chaque jour
+- Un canal de communication (Slack/Discord) est disponible pour l'entraide
+- Les enseignants sont disponibles pour des consultations ponctuelles
+- Des checkpoints intermédiaires permettent de valider la progression
+
+
+═══════════════════════════════════════════════════════════════════════════════
+3. OBJECTIFS DU PROJET
+═══════════════════════════════════════════════════════════════════════════════
+
+3.1 Objectifs fonctionnels
+
+Le système SmartScheduler doit être capable de :
+
+OF1. Gérer une base de connaissances structurée
+     - Cours avec leurs caractéristiques (durée, type, effectifs)
+     - Prérequis et incompatibilités entre cours
+     - Enseignants avec leurs compétences et disponibilités
+     - Salles avec leurs capacités et équipements
+     - Créneaux horaires de la semaine
+
+OF2. Valider la cohérence des données
+     - Absence de cycles dans les prérequis
+     - Compatibilité enseignants-cours
+     - Adéquation salles-besoins
+
+OF3. Générer des emplois du temps valides
+     - Respect de toutes les contraintes dures (voir section 4.3)
+     - Allocation de tous les cours aux créneaux disponibles
+     - Affectation des salles appropriées
+
+OF4. Optimiser la qualité des plannings
+     - Minimisation des temps morts pour les étudiants
+     - Équilibrage de la charge hebdomadaire
+     - Respect des préférences des enseignants
+     - Limitation des changements de bâtiment
+
+OF5. Planifier des parcours académiques (optionnel)
+     - Ordonnancement des cours sur plusieurs semestres
+     - Respect strict de la chaîne de prérequis
+     - Optimisation du temps de diplomation
+
+
+3.2 Objectifs techniques
+
+OT1. Programmation logique
+     - Implémenter un moteur d'inférence simple (chaînage avant)
+     - Utiliser pyDatalog pour modéliser le domaine
+     - Démontrer la maîtrise de l'algorithme d'unification
+
+OT2. Programmation par contraintes
+     - Modéliser le problème en MiniZinc de manière élégante
+     - Implémenter une fonction objectif multi-critères
+     - Interfacer MiniZinc avec Python
+
+OT3. Analyse comparative
+     - Comparer au moins 3 solveurs différents
+     - Mesurer temps de résolution et qualité des solutions
+     - Identifier les forces et faiblesses de chaque approche
+
+OT4. Génie logiciel
+     - Code structuré et documenté
+     - Tests unitaires sur les composants critiques
+     - Gestion de version (Git recommandé)
+
+
+3.3 Objectifs pédagogiques
+
+OP1. Maîtriser les concepts de programmation logique et par contraintes
+OP2. Développer des compétences en modélisation déclarative
+OP3. Acquérir une méthodologie de résolution de problèmes complexes
+OP4. Pratiquer le travail collaboratif en mode projet
+OP5. Communiquer efficacement des résultats techniques
+
+
+═══════════════════════════════════════════════════════════════════════════════
+4. SPÉCIFICATIONS DU SYSTÈME
+═══════════════════════════════════════════════════════════════════════════════
+
+4.1 Acteurs du système
+
+Le système SmartScheduler interagit avec plusieurs types d'acteurs :
+
+A1. GESTIONNAIRE DE SCOLARITÉ
+    - Définit les contraintes institutionnelles
+    - Configure les paramètres globaux (durée des créneaux, jours ouvrés)
+    - Valide les emplois du temps générés
+    - Exporte les plannings vers les outils métier
+
+A2. RESPONSABLE PÉDAGOGIQUE
+    - Définit le catalogue de cours et leurs caractéristiques
+    - Spécifie les prérequis et incompatibilités
+    - Définit les objectifs d'optimisation
+    - Ajuste les pondérations de la fonction objectif
+
+A3. ENSEIGNANT
+    - Déclare ses disponibilités
+    - Exprime ses préférences de créneaux
+    - Consulte son emploi du temps personnel
+    - Demande des modifications ponctuelles
+
+A4. ÉTUDIANT
+    - Consulte l'emploi du temps de son groupe
+    - Vérifie les prérequis pour s'inscrire à un cours
+    - Planifie son parcours académique (fonctionnalité avancée)
+
+A5. SYSTÈME (automatique)
+    - Vérifie la cohérence des données
+    - Génère les solutions candidates
+    - Optimise selon les critères définis
+    - Alerte en cas d'impossibilité
+
+
+4.2 Ressources du système
+
+Le système gère les ressources suivantes :
+
+R1. COURS
+    Attributs :
+    - Identifiant unique (ex: INFO201)
+    - Intitulé complet
+    - Nombre de crédits ECTS
+    - Type (CM, TD, TP, Projet)
+    - Durée hebdomadaire en heures
+    - Effectif attendu
+    - Semestre (S1, S2, S3, S4)
+    - Équipements requis (projecteur, laboratoire informatique, etc.)
+    - Liste des prérequis
+    - Liste des cours incompatibles
+
+R2. ENSEIGNANTS
+    Attributs :
+    - Identifiant
+    - Nom et prénom
+    - Spécialités/compétences
+    - Cours pouvant être enseignés
+    - Volume horaire maximal hebdomadaire
+    - Créneaux indisponibles
+    - Créneaux préférés (avec degré de préférence 1-10)
+
+R3. SALLES
+    Attributs :
+    - Identifiant
+    - Nom/localisation
+    - Capacité (nombre de places)
+    - Type (amphithéâtre, salle TD, laboratoire, salle projet)
+    - Équipements disponibles
+    - Bâtiment
+    - Étage
+
+R4. CRÉNEAUX HORAIRES
+    Attributs :
+    - Jour de la semaine (Lundi à Vendredi)
+    - Heure de début
+    - Heure de fin
+    - Durée en heures
+    - Catégorie (matin, après-midi, pause déjeuner)
+
+R5. GROUPES D'ÉTUDIANTS
+    Attributs :
+    - Identifiant du groupe
+    - Effectif
+    - Semestre de rattachement
+    - Liste des cours suivis
+    - Préférences (éviter cours tôt le matin, etc.)
+
+
+4.3 Contraintes du système
+
+4.3.1 Contraintes dures (OBLIGATOIRES)
+
+Ces contraintes DOIVENT être respectées par toute solution valide :
+
+CH1. Non-chevauchement des enseignants
+     Un enseignant ne peut enseigner plusieurs cours simultanément.
+
+CH2. Non-chevauchement des salles
+     Une salle ne peut accueillir qu'un seul cours à la fois.
+
+CH3. Non-chevauchement des groupes d'étudiants
+     Un groupe d'étudiants ne peut suivre qu'un cours à la fois.
+
+CH4. Capacité des salles
+     Le nombre d'étudiants ne doit jamais excéder la capacité de la salle.
+
+CH5. Équipements requis
+     La salle affectée doit disposer de tous les équipements nécessaires
+     au cours (ex: laboratoire informatique pour TP de programmation).
+
+CH6. Disponibilité des enseignants
+     Les cours doivent être programmés uniquement pendant les créneaux
+     où l'enseignant est disponible.
+
+CH7. Volume horaire hebdomadaire
+     Chaque cours doit recevoir exactement son volume horaire hebdomadaire
+     spécifié (ex: 4h pour Algorithmique).
+
+CH8. Limites de la semaine
+     Tous les créneaux doivent se situer dans la plage horaire autorisée
+     (par défaut : Lundi 8h - Vendredi 18h).
+
+CH9. Pause déjeuner garantie
+     Au moins une heure de pause doit être assurée entre 12h et 14h
+     chaque jour pour tous les groupes et enseignants.
+
+CH10. Type de salle approprié
+      Les cours magistraux nécessitent amphithéâtres, les TD des salles
+      classiques, les TP des laboratoires.
+
+
+4.3.2 Contraintes souples (PRÉFÉRENCES)
+
+Ces contraintes améliorent la qualité de la solution mais peuvent être
+partiellement violées. Chacune est associée à un poids dans la fonction
+objectif :
+
+CS1. Minimisation des temps morts étudiants
+     Poids : 10
+     Réduire les trous dans l'emploi du temps des groupes (créneaux vides
+     entre deux cours d'une même journée).
+
+CS2. Équilibrage de la charge quotidienne
+     Poids : 8
+     Éviter les journées surchargées et les journées vides. Viser une
+     répartition homogène sur la semaine.
+
+CS3. Respect des préférences enseignants
+     Poids : 5
+     Privilégier les créneaux préférés des enseignants (score 8-10).
+
+CS4. Limitation des changements de bâtiment
+     Poids : 4
+     Minimiser le nombre de fois où un groupe change de bâtiment au
+     cours d'une même journée.
+
+CS5. Regroupement des cours d'un enseignant
+     Poids : 3
+     Concentrer les interventions d'un enseignant sur des créneaux
+     consécutifs ou rapprochés.
+
+CS6. Éviter les cours très tôt le matin
+     Poids : 2
+     Si demandé par les étudiants, éviter le créneau 8h-10h.
+
+CS7. Éviter les cours en fin d'après-midi
+     Poids : 2
+     Si demandé, éviter le créneau 16h-18h.
+
+CS8. Mercredi après-midi libre
+     Poids : 6
+     Réserver le mercredi après-midi pour les activités sportives et
+     associatives (contrainte culturelle française).
+
+CS9. Minimisation des changements de salle
+     Poids : 3
+     Pour un même groupe, limiter le nombre de salles différentes
+     utilisées dans une journée.
+
+CS10. Cours consécutifs pour modules liés
+      Poids : 4
+      Programmer les CM et TD d'un même cours sur des créneaux proches
+      (ex: TD le lendemain du CM).
+
+
+4.3.3 Contraintes logiques (pour la base de connaissances)
+
+CL1. Prérequis transitifs
+     Si B nécessite A et C nécessite B, alors C nécessite indirectement A.
+
+CL2. Absence de cycles dans les prérequis
+     Il ne doit pas exister de chaîne circulaire de prérequis.
+
+CL3. Compatibilité enseignant-cours
+     Un enseignant ne peut se voir affecter que des cours qu'il est
+     habilité à enseigner.
+
+CL4. Validation des incompatibilités
+     Les cours déclarés incompatibles ne doivent pas être suivis par
+     le même groupe au même semestre.
+
+
+4.4 Exemples de contraintes spécifiques
+
+Pour illustrer la complexité du problème, voici des cas concrets :
+
+EXEMPLE 1 : Cours avec travaux pratiques
+Le cours "Bases de données" (INFO203) comprend :
+- 2h de CM (amphithéâtre, 80 places)
+- 2h de TD (salle classique, 40 places)
+- 2h de TP (laboratoire informatique équipé de serveurs BDD, 35 places)
+
+Ces 6 heures doivent être réparties dans la semaine, avec des enseignants
+différents possibles pour CM et TD/TP.
+
+EXEMPLE 2 : Contrainte de prérequis
+Le cours "Intelligence Artificielle" (INFO215) requiert :
+- Prérequis direct : "Structures de données" (INFO202)
+- Prérequis indirect : "Algorithmique" (INFO201), car INFO202 requiert INFO201
+
+Un étudiant ne peut s'inscrire à INFO215 qu'après avoir validé INFO202
+(qui nécessite lui-même INFO201).
+
+EXEMPLE 3 : Conflit de disponibilités
+L'enseignant Dr. Martin est indisponible les lundis matins (réunions
+administratives) et préfère fortement enseigner entre 10h et 12h (préférence
+score 9/10). Le système doit éviter de lui attribuer des cours le lundi matin
+(contrainte dure) et privilégier le créneau 10h-12h quand possible (contrainte
+souple).
+
+EXEMPLE 4 : Limitation de ressources
+Le département ne dispose que d'un seul laboratoire avec serveurs de bases de
+données (LAB3). Les cours INFO203 (BDD) et INFO212 (Réseaux) nécessitent tous
+deux cette salle. Le système doit les programmer à des créneaux différents.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+5. OUTILS LOGICIELS
+═══════════════════════════════════════════════════════════════════════════════
+
+5.1 Outils obligatoires
+
+Les outils suivants DOIVENT être utilisés dans le projet :
+
+O1. PYTHON (version 3.8 ou supérieure)
+    Langage principal du projet pour l'intégration et l'interface.
+
+O2. PYDATALOG (ou solution équivalente)
+    Bibliothèque Python pour la programmation logique style Datalog.
+    Utilisée pour modéliser la base de connaissances et les règles d'inférence.
+    Installation : pip install pyDatalog
+
+O3. MINIZINC (version 2.8 ou supérieure)
+    Langage de modélisation pour la programmation par contraintes.
+    Utilisé pour modéliser et résoudre le problème d'emploi du temps.
+    Téléchargement : https://www.minizinc.org/
+
+O4. PYMZN
+    Interface Python pour MiniZinc.
+    Permet d'appeler MiniZinc depuis Python et de récupérer les solutions.
+    Installation : pip install pymzn
+
+
+5.2 Outils recommandés
+
+Les outils suivants sont FORTEMENT RECOMMANDÉS :
+
+R1. GOOGLE OR-TOOLS
+    Suite d'optimisation de Google incluant le solveur CP-SAT.
+    Alternative performante à MiniZinc, particulièrement efficace pour
+    la programmation par contraintes.
+    Installation : pip install ortools
+    Documentation : https://developers.google.com/optimization/
+
+R2. SOLVEURS MINIZINC
+    Au moins trois solveurs doivent être testés et comparés :
+    - Gecode (installé par défaut avec MiniZinc)
+    - Chuffed (avec apprentissage de clauses)
+    - OR-Tools (via le solver or-tools de MiniZinc)
+
+R3. BIBLIOTHÈQUES D'ANALYSE
+    - pandas : manipulation de données tabulaires
+    - matplotlib : visualisation graphique
+    - tabulate : affichage de tableaux formatés
+
+
+5.3 Outils optionnels
+
+Les outils suivants peuvent enrichir le projet :
+
+OP1. SWI-PROLOG avec PySwip
+     Pour comparer pyDatalog avec un véritable système Prolog.
+     Installation : apt-get install swi-prolog (Linux) puis pip install pyswip
+
+OP2. PYPERPLAN
+     Planificateur PDDL en Python pour la planification de parcours.
+     Installation : pip install git+https://github.com/aibasel/pyperplan.git
+
+OP3. NETWORKX
+     Bibliothèque de graphes pour visualiser les dépendances entre cours.
+     Installation : pip install networkx
+
+OP4. FLASK
+     Framework web léger pour créer une interface web interactive.
+     Installation : pip install flask
+
+OP5. PYTEST
+     Framework de tests unitaires.
+     Installation : pip install pytest
+
+
+5.4 Environnement de développement
+
+IDE RECOMMANDÉS :
+- Visual Studio Code (avec extensions Python et MiniZinc)
+- PyCharm (édition Community ou Professional)
+- Jupyter Notebook (pour expérimentation et visualisation)
+
+GESTION DE VERSION :
+- Git (fortement recommandé)
+- Dépôt GitHub/GitLab pour collaboration au sein du groupe
+
+SYSTÈME D'EXPLOITATION :
+- Linux (Ubuntu, Debian) : installation native facilitée
+- macOS : via Homebrew
+- Windows : possible mais installation plus complexe (WSL recommandé)
+
+
+5.5 Installation et vérification
+
+Un script de vérification (verify_installation.py) est fourni dans le starter
+pack. Il permet de tester :
+- Version de Python
+- Présence de toutes les bibliothèques requises
+- Accessibilité de MiniZinc
+- Fonctionnement de base des solveurs
+
+PROCÉDURE RECOMMANDÉE :
+1. Créer un environnement virtuel Python
+   $ python3 -m venv venv
+   $ source venv/bin/activate
+
+2. Installer les dépendances
+   $ pip install -r requirements.txt
+
+3. Installer MiniZinc séparément (site officiel)
+
+4. Vérifier l'installation
+   $ python verify_installation.py
+
+
+═══════════════════════════════════════════════════════════════════════════════
+6. LIVRABLES ET MODALITÉS DE RENDU
+═══════════════════════════════════════════════════════════════════════════════
+
+Le projet donnera lieu à QUATRE livrables obligatoires, à remettre avant la
+présentation orale du Jour 5 (14h00 au plus tard).
+
+
+6.1 Livrable 1 : Rapport de synthèse
+
+FORMAT : Document PDF de 15 à 25 pages (hors annexes)
+NOM DE FICHIER : SmartScheduler_Rapport_GroupeN.pdf
+
+STRUCTURE ATTENDUE :
+
+1. PAGE DE GARDE
+   - Titre du projet
+   - Noms et prénoms des membres du groupe
+   - Date
+   - Formation (L2 Informatique)
+
+2. RÉSUMÉ EXÉCUTIF
+   - Objectifs du projet
+   - Approche adoptée
+   - Principaux résultats
+   - Limites et perspectives
+
+3. INTRODUCTION
+   - Contexte du problème
+   - État de l'art succinct
+   - Objectifs et périmètre du projet
+   - Organisation du rapport
+
+4. ANALYSE DU PROBLÈME
+   - Formulation mathématique du problème
+   - Identification des acteurs et ressources
+   - Recensement et classification des contraintes
+   - Complexité algorithmique
+
+5. MODÉLISATION LOGIQUE
+   - Représentation des connaissances en Datalog
+   - Règles d'inférence définies
+   - Exemples de requêtes et résultats
+   - Discussion sur l'expressivité et les limites
+
+6. MODÉLISATION PAR CONTRAINTES
+   - Choix de modélisation en MiniZinc
+   - Variables de décision
+   - Contraintes implémentées (dures et souples)
+   - Fonction objectif et pondérations
+   - Justification des choix de modélisation
+
+7. EXPÉRIMENTATIONS ET RÉSULTATS
+   - Protocole expérimental
+   - Instances de test utilisées
+   - Comparaison des solveurs (temps, qualité)
+   - Analyse de sensibilité aux paramètres
+   - Visualisations (graphiques, tableaux)
+
+8. INTERFACE UTILISATEUR
+   - Architecture de l'interface
+   - Fonctionnalités implémentées
+   - Captures d'écran commentées
+   - Guide d'utilisation succinct
+
+9. DISCUSSION
+   - Points forts de la solution
+   - Difficultés rencontrées et solutions apportées
+   - Limites et améliorations possibles
+   - Retour d'expérience sur le projet
+
+10. CONCLUSION
+    - Synthèse des contributions
+    - Perspectives d'évolution
+
+11. BIBLIOGRAPHIE
+    - Références utilisées (minimum 5)
+    - Format académique (ex. ArXiv)
+
+12. ANNEXES (optionnelles)
+    - Code source de fonctions critiques
+    - Résultats détaillés des benchmarks
+    - Documentation technique complémentaire
+
+CRITÈRES DE QUALITÉ :
+- Clarté de l'expression et correction de la langue
+- Rigueur scientifique et argumentation
+- Qualité des figures et tableaux
+- Pertinence de l'analyse critique
+- Respect de la structure imposée
+
+
+EXIGENCES DE QUALITÉ DU CODE :
+
+1. DOCUMENTATION
+   - Docstrings pour toutes les fonctions et classes
+   - Format Google Style ou NumPy Style
+   - Commentaires pour les sections complexes
+
+2. STYLE ET CONVENTIONS
+   - Respect de PEP 8 pour Python
+   - Nommage explicite des variables et fonctions
+   - Indentation cohérente (4 espaces)
+
+3. TESTS
+   - Au moins 10 tests unitaires couvrant les fonctions critiques
+   - Tests d'intégration sur des scénarios complets
+   - Script de lancement : pytest
+
+4. README.md OBLIGATOIRE
+   Contenu minimal :
+   - Description du projet
+   - Prérequis et installation
+   - Guide d'utilisation rapide
+   - Structure du projet
+   - Auteurs
+
+5. REPRODUCTIBILITÉ
+   - Toutes les dépendances listées dans requirements.txt
+   - Instructions d'installation claires et testées
+   - Données d'exemple fournies
+
+
+6.3 Livrable 3 : Interface utilisateur
+
+FORMATS ACCEPTÉS :
+- Application web (HTML/CSS/JavaScript + Flask/Django)
+- Interface graphique Python (Tkinter, PyQt, Streamlit)
+- Interface en ligne de commande évoluée (avec menus interactifs)
+- Notebook Jupyter interactif
+
+FONCTIONNALITÉS MINIMALES REQUISES :
+
+F1. CHARGEMENT DES DONNÉES
+    - Import des fichiers JSON de configuration
+    - Validation des données importées
+    - Affichage de statistiques (nb cours, salles, etc.)
+
+F2. CONFIGURATION DE LA RÉSOLUTION
+    - Choix du solveur (Gecode, Chuffed, OR-Tools)
+    - Réglage du timeout
+    - Ajustement des poids de la fonction objectif
+
+F3. LANCEMENT DE LA GÉNÉRATION
+    - Bouton/commande pour déclencher la résolution
+    - Barre de progression ou indicateur d'activité
+    - Gestion des erreurs et affichage de messages clairs
+
+F4. VISUALISATION DES RÉSULTATS
+    - Affichage de l'emploi du temps sous forme de grille
+      (lignes = créneaux, colonnes = salles ou groupes)
+    - Vue par enseignant
+    - Vue par groupe d'étudiants
+    - Vue par salle
+
+F5. INDICATEURS DE QUALITÉ
+    - Valeur de la fonction objectif
+    - Nombre de contraintes souples satisfaites
+    - Temps de résolution
+    - Statistiques sur les temps morts, équilibrage, etc.
+
+F6. EXPORT
+    - Export de l'emploi du temps en CSV
+    - Export en PDF (optionnel mais valorisé)
+    - Export au format iCal (bonus)
+
+CRITÈRES D'ÉVALUATION DE L'INTERFACE :
+- Utilisabilité et ergonomie
+- Clarté de la présentation
+- Gestion des erreurs
+- Esthétique (sans être prioritaire)
+
+
+6.4 Livrable 4 : Présentation orale
+
+FORMAT : Présentation de 15 minutes + 5 minutes de questions
+SUPPORT : Diaporama (PowerPoint, Beamer, Google Slides, etc.)
+NOMBRE DE SLIDES : 10 à 15 slides
+
+STRUCTURE RECOMMANDÉE :
+
+1. SLIDE DE TITRE
+   - Titre du projet
+   - Membres du groupe
+   - Date
+
+2. CONTEXTE ET PROBLÉMATIQUE (1-2 slides)
+   - Enjeu du problème d'emploi du temps
+   - Complexité algorithmique
+   - Objectifs du projet
+
+3. APPROCHE ADOPTÉE (2-3 slides)
+   - Architecture générale du système
+   - Technologies utilisées
+   - Choix de modélisation
+
+4. DÉMONSTRATION LIVE (5-7 slides)
+   - Lancement de l'interface
+   - Génération d'un emploi du temps
+   - Visualisation des résultats
+   - Analyse de la solution obtenue
+
+   IMPORTANT : Préparer une vidéo de secours en cas de problème technique
+
+5. RÉSULTATS EXPÉRIMENTAUX (2-3 slides)
+   - Comparaison des solveurs
+   - Graphiques de performance
+   - Analyse de sensibilité
+
+6. DISCUSSION (1-2 slides)
+   - Points forts de la solution
+   - Limitations
+   - Améliorations futures
+
+7. CONCLUSION (1 slide)
+   - Bilan du projet
+   - Apprentissages
+
+CONSEILS POUR LA PRÉSENTATION :
+- Répéter la présentation plusieurs fois
+- Chronométrer pour respecter les 15 minutes
+- Tous les membres du groupe doivent prendre la parole
+- Privilégier la démonstration à la théorie
+- Préparer des réponses aux questions probables
+- Avoir une sauvegarde de la démo (vidéo ou captures d'écran)
+
+═══════════════════════════════════════════════════════════════════════════════
+7. BIBLIOGRAPHIE ET RESSOURCES
+═══════════════════════════════════════════════════════════════════════════════
+
+7.1 Ouvrages de référence
+
+PROGRAMMATION PAR CONTRAINTES
+
+[1] Dechter, R. (2003). Constraint Processing. Morgan Kaufmann Publishers.
+    ISBN: 978-1558608900
+    → LA référence académique sur la programmation par contraintes. Niveau
+      master/doctorat mais chapitres introductifs accessibles.
+
+[2] Apt, K. (2003). Principles of Constraint Programming. Cambridge University
+    Press. ISBN: 978-0521825832
+    → Approche plus formelle et théorique. Excellent pour comprendre les
+      fondements mathématiques.
+
+[3] Rossi, F., Van Beek, P., & Walsh, T. (Eds.). (2006). Handbook of Constraint
+    Programming. Elsevier. ISBN: 978-0444527264
+    → Compilation de chapitres par des experts internationaux. Référence
+      encyclopédique.
+
+[4] Hentenryck, P. V., & Michel, L. (2009). Constraint-Based Local Search.
+    MIT Press. ISBN: 978-0262513098
+    → Approches hybrides combinant CP et recherche locale.
+
+
+PROGRAMMATION LOGIQUE
+
+[5] Sterling, L., & Shapiro, E. (1994). The Art of Prolog (2nd ed.). MIT Press.
+    ISBN: 978-0262691635
+    → Référence classique sur Prolog. Style élégant et pédagogique.
+
+[6] Bramer, M. (2013). Logic Programming with Prolog (2nd ed.). Springer.
+    ISBN: 978-1447154860
+    → Introduction accessible avec nombreux exemples pratiques.
+
+[7] Clocksin, W., & Mellish, C. (2003). Programming in Prolog (5th ed.).
+    Springer. ISBN: 978-3540006787
+    → Autre classique, approche plus technique.
+
+
+PLANIFICATION AUTOMATIQUE
+
+[8] Ghallab, M., Nau, D., & Traverso, P. (2004). Automated Planning: Theory
+    and Practice. Morgan Kaufmann. ISBN: 978-1558608566
+    → Référence complète sur la planification. Couvre STRIPS, PDDL, et
+      techniques modernes.
+
+[9] Geffner, H., & Bonet, B. (2013). A Concise Introduction to Models and
+    Methods for Automated Planning. Morgan & Claypool.
+    ISBN: 978-1608457502
+    → Introduction concise et pédagogique.
+
+
+APPLICATIONS AU TIMETABLING
+
+[10] Burke, E. K., & Petrovic, S. (2002). Recent research directions in
+     automated timetabling. European Journal of Operational Research, 140(2),
+     266-280.
+     → Survey sur l'état de l'art du timetabling automatisé.
+
+[11] Schaerf, A. (1999). A survey of automated timetabling. Artificial
+     Intelligence Review, 13(2), 87-127.
+     → Survey classique sur le problème d'emplois du temps.
+
+
+7.2 Articles scientifiques recommandés
+
+[12] Robinson, J. A. (1965). A machine-oriented logic based on the resolution
+     principle. Journal of the ACM, 12(1), 23-41.
+     → Article fondateur sur la résolution en logique. Court et accessible.
+
+[13] Mackworth, A. K. (1977). Consistency in networks of relations. Artificial
+     Intelligence, 8(1), 99-118.
+     → Introduction de l'algorithme AC-3 pour l'arc-consistency.
+
+[14] Van Hentenryck, P. (1989). Constraint satisfaction in logic programming.
+     MIT Press.
+     → Lien entre programmation logique et par contraintes.
+
+[15] Laborie, P. (2009). IBM ILOG CP Optimizer for detailed scheduling
+     illustrated on three problems. In Integration of AI and OR Techniques
+     in Constraint Programming (pp. 148-162).
+     → Applications industrielles de la programmation par contraintes.
+
+
+7.3 Tutoriels et documentation en ligne
+
+MINIZINC
+[16] MiniZinc Tutorial
+     https://www.minizinc.org/doc-2.8.5/en/part_2_tutorial.html
+     → Tutoriel officiel complet avec exemples progressifs.
+
+[17] MiniZinc Handbook
+     https://www.minizinc.org/doc-2.8.5/en/index.html
+     → Documentation de référence exhaustive.
+
+GOOGLE OR-TOOLS
+[18] OR-Tools Constraint Programming Guide
+     https://developers.google.com/optimization/cp/cp_solver
+     → Guide officiel du solveur CP-SAT.
+
+[19] OR-Tools Python Examples
+     https://github.com/google/or-tools/tree/stable/examples/python
+     → Collection d'exemples commentés.
+
+[20] CP-SAT Primer (Dominik Krupke)
+     https://d-krupke.github.io/cpsat-primer/
+     → Excellent tutoriel indépendant sur CP-SAT. Très pédagogique.
+
+PYDATALOG
+[21] pyDatalog Tutorial
+     https://sites.google.com/site/pydatalog/Online-datalog-tutorial
+     → Tutoriel officiel avec exemples interactifs.
+
+PLANIFICATION
+[22] PDDL Tutorial
+     http://www.cs.toronto.edu/~sheila/2542/s14/A1/introtopddl2.pdf
+     → Introduction claire à PDDL avec exemples.
+
+[23] Planning.wiki
+     http://planning.wiki/
+     → Wiki communautaire sur la planification automatique.
+
+
+7.4 Bases de problèmes et benchmarks
+
+[24] CSPLib: A problem library for constraints
+     https://www.csplib.org/
+     → Collection de problèmes de contraintes pour tester vos algorithmes.
+
+[25] MiniZinc Benchmarks
+     https://github.com/MiniZinc/minizinc-benchmarks
+     → Instances de référence pour comparer les solveurs.
+
+[26] ITC 2021 - International Timetabling Competition
+     https://www.itc2021.org/
+     → Instances réelles de problèmes d'emplois du temps universitaires.
+
+[27] PSPLib - Project Scheduling Problem Library
+     https://www.om-db.wi.tum.de/psplib/
+     → Bibliothèque de problèmes d'ordonnancement.
+
+
+7.5 Cours en ligne (MOOCs)
+
+[28] "Basic Modeling for Discrete Optimization" - Coursera
+     Université de Melbourne
+     → Cours gratuit sur la modélisation en MiniZinc.
+
+[29] "Advanced Modeling for Discrete Optimization" - Coursera
+     Université de Melbourne
+     → Suite du cours précédent, niveau avancé.
+
+[30] "Constraint Programming" - Coursera
+     Universitat Pompeu Fabra
+     → Introduction théorique et pratique aux CSP.
+
+
+7.6 Logiciels et bibliothèques
+
+[31] SWI-Prolog
+     https://www.swi-prolog.org/
+     → Implémentation Prolog de référence, gratuite et open-source.
+
+[32] Chuffed Constraint Solver
+     https://github.com/chuffed/chuffed
+     → Solveur CP performant avec apprentissage de clauses.
+
+[33] Gecode - Generic Constraint Development Environment
+     https://www.gecode.org/
+     → Bibliothèque C++ de référence pour la programmation par contraintes.
+
+[34] Z3 Theorem Prover (Microsoft Research)
+     https://github.com/Z3Prover/z3
+     → Solveur SAT/SMT très puissant, utile pour approches alternatives.
+
+[35] Fast Downward
+     https://www.fast-downward.org/
+     → Planificateur très performant, gagnant de nombreuses IPC.
+
+
+7.7 Communautés et forums
+
+[36] Stack Overflow - Tag [constraint-programming]
+     https://stackoverflow.com/questions/tagged/constraint-programming
+     → Questions-réponses sur la programmation par contraintes.
+
+[37] Stack Overflow - Tag [minizinc]
+     https://stackoverflow.com/questions/tagged/minizinc
+     → Questions spécifiques à MiniZinc.
+
+[38] Google OR-Tools Discussions
+     https://github.com/google/or-tools/discussions
+     → Forum officiel de OR-Tools.
+
+[39] Constraint Programming Conference (CP)
+     https://cp2024.a4cp.org/
+     → Conférence annuelle de référence. Proceedings disponibles.
+
+
+7.8 Vidéos et présentations
+
+[40] Peter J. Stuckey - "Constraint Programming: What, Why, and How"
+     YouTube / IJCAI
+     → Présentation introductive par un des créateurs de MiniZinc.
+
+[41] Laurent Perron (Google) - "OR-Tools: Fast and Portable Optimization"
+     YouTube / Google TechTalks
+     → Présentation de OR-Tools par l'équipe de développement.
+
+[42] MiniZinc MOOC - Video Lectures
+     Coursera / Université de Melbourne
+     → Cours vidéo complet sur MiniZinc et la modélisation.
+
+
+7.9 Suggestions de lecture par niveau
+
+DÉBUTANT (L2 - niveau du projet)
+- [6] Logic Programming with Prolog (Bramer)
+- [21] pyDatalog Tutorial (en ligne)
+- [16] MiniZinc Tutorial (en ligne)
+- [18] OR-Tools CP Guide (en ligne)
+- [22] PDDL Tutorial (en ligne)
+
+INTERMÉDIAIRE (L3/M1)
+- [1] Constraint Processing (chapitres 1-7) (Dechter)
+- [5] The Art of Prolog (Sterling & Shapiro)
+- [20] CP-SAT Primer (en ligne)
+- [28] MOOC Coursera - Basic Modeling
+
+AVANCÉ (M2/Recherche)
+- [1] Constraint Processing (complet) (Dechter)
+- [3] Handbook of Constraint Programming (Rossi et al.)
+- [8] Automated Planning: Theory and Practice (Ghallab et al.)
+- Articles de recherche dans CP Conference proceedings
+
+
+7.10 Ressources spécifiques au timetabling
+
+[43] Lewis, R. (2008). A survey of metaheuristic-based techniques for
+     University Timetabling problems. OR Spectrum, 30(1), 167-190.
+
+[44] Pillay, N. (2014). A survey of school timetabling research. Annals of
+     Operations Research, 218(1), 261-293.
+
+[45] Al-Yakoob, S. M., & Sherali, H. D. (2015). Mathematical models and
+     algorithms for a high school timetabling problem. Computers &
+     Operations Research, 61, 56-68.
+
+[46] Repository GitHub - University Timetabling Solutions
+     https://github.com/topics/university-timetabling
+     → Projets open-source sur le timetabling universitaire.

@@ -21,6 +21,13 @@ type_cours(info201, cm).
 type_cours(info202, td).
 type_cours(info203, tp).
 
+prerequis(info202, info201)
+prerequis(info203, info202)
+
+valide(g1, info201)
+valide(g2, info201)
+valide(g2, info202)
+
 effectif(g1, 35).
 effectif(g2, 30).
 
@@ -90,6 +97,10 @@ dispo_ok(Prof, Creneau) :-
     seance(_, _, Prof, _, Creneau),
     dispo(Prof, Creneau).
 
+prerequis_ok(Groupe, Cour) :-
+    prerequis(Prerequis, Cour),
+    valide(Groupe,Prerequis).
+
 habilitation_ok(Prof, Cours) :-
     seance(Cours, _, Prof, _, _),
     peut_enseigner(Prof, Cours).
@@ -102,7 +113,8 @@ planning_valide :-
         capacite_ok(C,G,S),
         type_salle_ok(C,S),
         dispo_ok(P,Cr),
-        habilitation_ok(P,C)
+        habilitation_ok(P,C),
+        prerequis_ok(G,C)
     )).
 
 liste_conflits :-
