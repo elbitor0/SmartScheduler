@@ -1,0 +1,31 @@
+nb_cours = 3;
+nb_profs = 2;
+nb_salles = 2;
+nb_groupes = 2;
+nb_creneaux = 4;
+nb_seances = 3;
+
+capacite_salle = [40, 35];
+effectif_groupe = [35, 30];
+
+groupe_suit_cours = [| 1, 0, 0
+| 1, 1, 0
+ |];
+
+prof_peut_enseigner = [| 1, 1, 0
+| 0, 0, 1
+ |];
+
+prof_disponible = [| 1, 0, 1, 0
+| 0, 1, 0, 1
+ |];
+
+salle_compatible_cours = [| 0, 1, 0
+| 0, 0, 1
+ |];
+
+jour_creneau = [1, 1, 2, 3];
+heure_debut_creneau = [10, 14, 10, 10];
+
+seance_cours = [1, 1, 2];
+seance_groupe = [1, 2, 2];
