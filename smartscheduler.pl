@@ -3,6 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % ====== ENTITÉS ======
+:- use_module(library(clpfd)).
 cours(info201).
 cours(info202).
 cours(info203).
@@ -21,12 +22,12 @@ type_cours(info201, cm).
 type_cours(info202, td).
 type_cours(info203, tp).
 
-prerequis(info202, info201)
-prerequis(info203, info202)
+prerequis(info202, info201).
+prerequis(info203, info202).
 
-valide(g1, info201)
-valide(g2, info201)
-valide(g2, info202)
+valide(g1, info201).
+valide(g2, info201).
+valide(g2, info202).
 
 effectif(g1, 35).
 effectif(g2, 30).
