@@ -1,3 +1,2 @@
-pyDatalog
-pymzn
-tabulate
+pyswip
+minizinc
