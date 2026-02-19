@@ -1,131 +1,63 @@
-"""
-prolog_bridge.py - Pont Python ↔ Prolog (CLP/Fd) via pyDatalog
+from pyswip import Prolog
 
-Ce module :
- Lit le fichier Prolog (.pl) smartscheduler.pl
- Crée les faits dans pyDatalog
- Définit les règles logiques (prérequis transitifs, compatibilité salle/cours)
- Fournit des fonctions pour récupérer ces informations depuis Python
-"""
+prolog = Prolog()
 
-from pyDatalog import pyDatalog
+def charger_base(fichier="smartscheduler.pl"):
 
-# --- Déclaration des termes pyDatalog ---
-pyDatalog.create_terms(
-    "X,Y,Z,C,G,P,S,Cr,Cap,T,"
-    "cours,prof,salle,groupe,"
-    "type_cours,prerequis,effectif,capacite,"
-    "type_salle,besoin_salle,dispo,peut_enseigner,"
-    "prerequis_transitif,salle_compatible,enseignant_pour_cours"
-)
+    prolog.consult(fichier)
 
-# --- Lecture du fichier Prolog ---
-def lire_fichier_pl(chemin="smartscheduler.pl"):
-    """
-    Lit le fichier Prolog et retourne un dictionnaire avec tous les faits.
-    """
+def requete(query):
+   
+    return list(prolog.query(query))
+
+def get_prerequis(cours):
+    results = requete(f"prerequis({cours}, X)")
+    return [r["X"] for r in results]
+
+def get_enseignants(cours):
+    results = requete(f"peut_enseigner(P, {cours})")
+    return [r["P"] for r in results]
+
+def get_dispos(prof):
+    results = requete(f"dispo({prof}, C)")
+    return [r["C"] for r in results]
+
+def get_salles_compatibles(cours):
+    results = requete(f"besoin_salle({cours}, T), type_salle(S, T)")
+    return [r["S"] for r in results]
+
+def planning_valide():
+    return bool(requete("planning_valide"))
+
+def get_donnees():
+
     donnees = {
-        "cours": [], "prof": [], "salle": [], "groupe": [],
-        "type_cours": [], "prerequis": [], "effectif": [], "capacite": [],
-        "type_salle": [], "besoin_salle": [], "dispo": [], "peut_enseigner": []
+        "cours": [r["X"] for r in requete("cours(X)")],
+        "prof": [r["X"] for r in requete("prof(X)")],
+        "salle": [r["X"] for r in requete("salle(X)")],
+        "groupe": [r["X"] for r in requete("groupe(X)")],
+
+        "valide": [(r["G"], r["C"]) for r in requete("valide(G,C)")],
+        "effectif": [(r["G"], r["E"]) for r in requete("effectif(G,E)")],
+        "capacite": [(r["S"], r["C"]) for r in requete("capacite(S,C)")],
+
+        "type_salle": [(r["S"], r["T"]) for r in requete("type_salle(S,T)")],
+        "besoin_salle": [(r["C"], r["T"]) for r in requete("besoin_salle(C,T)")],
+
+        "creneau": [
+            (r["Id"], r["J"], r["H1"], r["H2"])
+            for r in requete("creneau(Id,J,H1,H2)")
+        ],
+
+        "dispo": [(r["P"], r["C"]) for r in requete("dispo(P,C)")],
+        "peut_enseigner": [
+            (r["P"], r["C"]) for r in requete("peut_enseigner(P,C)")
+        ],
     }
 
-    with open(chemin, "r", encoding="utf-8") as f:
-        for ligne in f:
-            ligne = ligne.strip()
-            if not ligne or ligne.startswith("%") or ":-" in ligne:
-                continue
-            if "(" not in ligne or not ligne.endswith(")."):
-                continue
-
-            nom = ligne.split("(")[0].strip()
-            contenu = ligne.split("(")[1].replace(").","")
-            args = [a.strip() for a in contenu.split(",")]
-
-            # Ignorer les variables (commencent par majuscule)
-            if any(a[0].isupper() for a in args):
-                continue
-
-            if nom in donnees:
-                donnees[nom].append(args)
-
     return donnees
 
-# --- Charger les faits dans pyDatalog ---
-def charger_dans_pyDatalog(donnees):
-    for args in donnees["cours"]:
-        +cours(args[0])
-    for args in donnees["prof"]:
-        +prof(args[0])
-    for args in donnees["salle"]:
-        +salle(args[0])
-    for args in donnees["groupe"]:
-        +groupe(args[0])
-    for args in donnees["type_cours"]:
-        +type_cours(args[0], args[1])
-    for args in donnees["prerequis"]:
-        +prerequis(args[0], args[1])
-    for args in donnees["effectif"]:
-        +effectif(args[0], int(args[1]))
-    for args in donnees["capacite"]:
-        +capacite(args[0], int(args[1]))
-    for args in donnees["type_salle"]:
-        +type_salle(args[0], args[1])
-    for args in donnees["besoin_salle"]:
-        +besoin_salle(args[0], args[1])
-    for args in donnees["dispo"]:
-        +dispo(args[0], args[1])
-    for args in donnees["peut_enseigner"]:
-        +peut_enseigner(args[0], args[1])
-
-# --- Définition des règles logiques ---
-def definir_regles():
-    """
-    Définit :
-    - prerequis transitifs
-    - compatibilité salle/cours
-    - enseignants pour chaque cours
-    """
-    prerequis_transitif(X,Z) <= prerequis(X,Z)
-    prerequis_transitif(X,Z) <= prerequis(X,Y) & prerequis_transitif(Y,Z)
-
-    salle_compatible(C,S) <= besoin_salle(C,T) & type_salle(S,T)
-    enseignant_pour_cours(P,C) <= peut_enseigner(P,C)
-
-# --- Fonctions pour récupérer des informations ---
-def get_prerequis(cours_id=None):
-    if cours_id:
-        resultat = prerequis_transitif(X,cours_id)
-    else:
-        resultat = prerequis_transitif(X,Y)
-    return [(str(l[0]), cours_id) if cours_id else (str(l[0]), str(l[1])) for l in resultat]
-
-def get_salles_compatibles(cours_id=None):
-    if cours_id:
-        resultat = salle_compatible(cours_id,S)
-    else:
-        resultat = salle_compatible(C,S)
-    return [(cours_id,str(l[0])) if cours_id else (str(l[0]),str(l[1])) for l in resultat]
-
-def get_enseignants_pour_cours(cours_id=None):
-    if cours_id:
-        resultat = enseignant_pour_cours(P,cours_id)
-    else:
-        resultat = enseignant_pour_cours(P,C)
-    return [(str(l[0]),cours_id) if cours_id else (str(l[0]),str(l[1])) for l in resultat]
-
-# --- Charger la base complète ---
-def charger_base(chemin="smartscheduler.pl"):
-    donnees = lire_fichier_pl(chemin)
-    charger_dans_pyDatalog(donnees)
-    definir_regles()
-    return donnees
-
-# --- Test ---
 if __name__ == "__main__":
-    donnees = charger_base()
-    print("Cours :", [c[0] for c in donnees["cours"]])
-    print("Profs :", [p[0] for p in donnees["prof"]])
-    print("--- Prérequis transitifs ---")
-    for p in get_prerequis():
-        print(" ", p)
+    charger_base()
+    print("Cours :", requete("cours(X)"))
+    print("Prerequis info203 :", get_prerequis("info203"))
