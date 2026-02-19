@@ -53,6 +53,9 @@ def get_donnees():
         "peut_enseigner": [
             (r["P"], r["C"]) for r in requete("peut_enseigner(P,C)")
         ],
+        "a_planifier": [
+            (r["G"], r["C"]) for r in requete("a_planifier(G,C)")
+        ],
     }
 
     return donnees

@@ -62,7 +62,7 @@ def preparer_donnees(donnees):
     sc = []
     sg = []
 
-    for g, c in donnees["valide"]:
+    for g, c in donnees["a_planifier"]:
         sc.append(idx_c[c])
         sg.append(idx_g[g])
 
@@ -121,8 +121,8 @@ def generer_emploi_du_temps(donnees, model_file="smartscheduler.mzn"):
 
     for i in range(data["nb_seances"]):
         seances.append({
-            "cours": maps["cours"][result["seance_cours"][i]],
-            "groupe": maps["groupes"][result["seance_groupe"][i]],
+            "cours": maps["cours"][data["seance_cours"][i]],
+            "groupe": maps["groupes"][data["seance_groupe"][i]],
             "prof": maps["profs"][result["seance_prof"][i]],
             "salle": maps["salles"][result["seance_salle"][i]],
             "creneau": maps["creneaux"][result["seance_creneau"][i]],
