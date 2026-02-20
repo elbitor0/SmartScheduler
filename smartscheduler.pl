@@ -71,7 +71,7 @@ conflit_prof(P, Creneau) :-
     seance(C2, G2, P, S2, Creneau),
     (C1 \= C2 ; G1 \= G2 ; S1 \= S2).
 
-% 2) une salle ne peut pas être utilisée 2 fois au même créneau
+% 2) une salle ne peut pas être utilisée 2 fois au même créneauad
 conflit_salle(Salle, Creneau) :-
     seance(C1, G1, P1, Salle, Creneau),
     seance(C2, G2, P2, Salle, Creneau),
