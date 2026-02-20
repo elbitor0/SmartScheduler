@@ -1,58 +1,87 @@
-% --- Paramètres ---
-int: nb_cours;
-int: nb_profs;
-int: nb_salles;
-int: nb_groupes;
-int: nb_creneaux;
-int: nb_seances;
+% Paramètres principaux
 
-array[1..nb_salles] of int: capacite_salle;
-array[1..nb_groupes] of int: effectif_groupe;
+int: nbCours;
+int: nbProfs;
+int: nbSalles;
+int: nbGroupes;
+int: nbCreneaux;
+int: nbSeances;
 
-array[1..nb_groupes, 1..nb_cours] of int: groupe_suit_cours;
-array[1..nb_profs, 1..nb_cours] of int: prof_peut_enseigner;
-array[1..nb_profs, 1..nb_creneaux] of int: prof_disponible;
-array[1..nb_salles, 1..nb_cours] of int: salle_compatible_cours;
+array[1..nbSalles] of int: capaciteSalle; % capacité des salles
+array[1..nbGroupes] of int: tailleGroupe; % nombre d'étudiants par groupe
 
-array[1..nb_creneaux] of int: jour_creneau;
-array[1..nb_creneaux] of int: heure_debut_creneau;
+array[1..nbGroupes, 1..nbCours] of int: groupeSuitCours;
+array[1..nbProfs, 1..nbCours] of int: profPeutFaire;
+array[1..nbProfs, 1..nbCreneaux] of int: profEstDispo;
+array[1..nbSalles, 1..nbCours] of int: salleOK;
 
-array[1..nb_seances] of int: seance_cours;
-array[1..nb_seances] of int: seance_groupe;
+array[1..nbCreneaux] of int: jourCreneau;
+array[1..nbCreneaux] of int: heureDebut;
 
-% --- Variables de décision ---
-array[1..nb_seances] of var 1..nb_profs: seance_prof;
-array[1..nb_seances] of var 1..nb_salles: seance_salle;
-array[1..nb_seances] of var 1..nb_creneaux: seance_creneau;
+array[1..nbSeances] of int: seanceCours;
+array[1..nbSeances] of int: seanceGroupe;
 
-% --- Contraintes ---
+
+% Variables de décision
+
+array[1..nbSeances] of var 1..nbProfs: profSeance;
+array[1..nbSeances] of var 1..nbSalles: salleSeance;
+array[1..nbSeances] of var 1..nbCreneaux: creneauSeance;
+
+
+% Contraintes principales
+
 constraint
-  forall(s in 1..nb_seances) (
-    % Professeur doit pouvoir enseigner le cours
-    prof_peut_enseigner[seance_prof[s], seance_cours[s]] = 1 /\
-    % Professeur disponible à ce créneau
-    prof_disponible[seance_prof[s], seance_creneau[s]] = 1 /\
-    % Salle compatible avec le cours
-    salle_compatible_cours[seance_salle[s], seance_cours[s]] = 1 /\
-    % Salle doit avoir une capacité suffisante
-    capacite_salle[seance_salle[s]] >= effectif_groupe[seance_groupe[s]]
-  );
+forall(s in 1..nbSeances) (
+% 1 Verifie que le prof sait enseigner ce cours
+profPeutFaire[profSeance[s], seanceCours[s]] = 1 /\
 
-% Pas de conflit de profs ou de salles sur le même créneau
+% 2 Vérifie la disponibilite du prof
+profEstDispo[profSeance[s], creneauSeance[s]] = 1 /\
+
+% 3 Verifie compatibilite salle-cours
+salleOK[salleSeance[s], seanceCours[s]] = 1 /\
+
+% 4 Verifie capacite suffisante
+capaciteSalle[salleSeance[s]] >= tailleGroupe[seanceGroupe[s]]
+
+);
+
+
+% Verifie si pas de conflits
+
 constraint
-  forall(i,j in 1..nb_seances where i < j) (
-    (seance_creneau[i] != seance_creneau[j]) \/
-    (seance_prof[i] != seance_prof[j] /\ seance_salle[i] != seance_salle[j])
-  );
+forall(i in 1..nbSeances, j in 1..nbSeances where i < j) (
 
-% --- Objectif (optionnel : minimiser les créneaux tardifs) ---
-var int: max_creneau = max([heure_debut_creneau[seance_creneau[s]] | s in 1..nb_seances]);
+% Verifie sii même créneau, alors pas même prof et pas même salle
+(creneauSeance[i] != creneauSeance[j]) \/
+(
+  profSeance[i] != profSeance[j] /\
+  salleSeance[i] != salleSeance[j]
+)
+
+);
+
+% Objectif
+
+var int: dernierCreneauUtilise =
+max([heureDebut[creneauSeance[s]] | s in 1..nbSeances]);
+
 solve satisfy;
 
-% --- Sortie ---
+% Sortie
+
 output [
-  if fix(seance_prof[s]) > 0 then
-    "seance(\(seance_cours[s]),\(seance_groupe[s]),\(seance_prof[s]),\(seance_salle[s]),\(seance_creneau[s]))\n"
-  else "" endif
-  | s in 1..nb_seances
+if fix(profSeance[s]) > 0 then
+"seance(" ++
+show(seanceCours[s]) ++ "," ++
+show(seanceGroupe[s]) ++ "," ++
+show(profSeance[s]) ++ "," ++
+show(salleSeance[s]) ++ "," ++
+show(creneauSeance[s]) ++
+")\n"
+else
+""
+endif
+| s in 1..nbSeances
 ];
