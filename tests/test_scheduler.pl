@@ -6,9 +6,8 @@
 test(prerequis_direct) :-
     prerequis(info202, info201).
 
-- prerequis_transitif(info203, info201).
-+ prerequis_transitif(info202, info201).
-
+test(prerequis_transitif_direct) :-
+    prerequis_transitif(info202, info201).
 
 test(prerequis_absent, [fail]) :-
     prerequis_transitif(info201, info203).

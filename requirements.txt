@@ -1,2 +1,4 @@
 pyswip
 minizinc
+streamlit
+pandas

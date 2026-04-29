@@ -53,11 +53,12 @@ capaciteSalle[salleSeance[s]] >= tailleGroupe[seanceGroupe[s]]
 constraint
 forall(i in 1..nbSeances, j in 1..nbSeances where i < j) (
 
-% Verifie sii même créneau, alors pas même prof et pas même salle
+% Si même créneau : pas même prof, pas même salle, pas même groupe
 (creneauSeance[i] != creneauSeance[j]) \/
 (
   profSeance[i] != profSeance[j] /\
-  salleSeance[i] != salleSeance[j]
+  salleSeance[i] != salleSeance[j] /\
+  seanceGroupe[i] != seanceGroupe[j]
 )
 
 );

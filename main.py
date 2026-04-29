@@ -9,7 +9,7 @@ def main():
 
     print("\n--- Prérequis ---")
     for r in requete("prerequis(X, Y)"):
-        print(f"{r['X']} est prérequis de {r['Y']}")
+        print(f"{r['Y']} est prérequis de {r['X']}")
 
     print("\nRecuperation des donnees depuis Prolog...")
     donnees = get_donnees()
