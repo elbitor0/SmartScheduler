@@ -16,15 +16,15 @@ Pour SWI-Prolog et MiniZinc, il faut bien penser à les ajouter au PATH du syst�
 
 Une fois les outils ci-dessus installés, place-toi dans le dossier du projet :
 
-```powershell
+/powershell
 cd SmartScheduler
-```
+/
 
 Puis installe les paquets Python nécessaires :
 
-```powershell
+/powershell
 py -m pip install -r requirements.txt
-```
+/
 
 Cela installe pyswip (le pont entre Python et SWI-Prolog), minizinc (le pont vers le solveur), streamlit (pour l'interface web) et pandas (pour la manipulation des tableaux de données).
 
@@ -32,23 +32,22 @@ Cela installe pyswip (le pont entre Python et SWI-Prolog), minizinc (le pont ver
 
 Le moyen le plus simple d'utiliser SmartScheduler est de lancer l'interface web :
 
-```powershell
+/powershell
 py -m streamlit run app.py
-```
-
+/
 Streamlit ouvre automatiquement le navigateur sur http://localhost:8501. L'interface est organisée en trois onglets. L'onglet Données affiche les statistiques de la base de connaissances, la liste des prérequis, les créneaux disponibles et les habilitations des enseignants. L'onglet Planning lance la génération de l'emploi du temps : une grille hebdomadaire colorée montre les séances par groupe, et trois vues détaillées permettent de filtrer par groupe, par enseignant ou par salle. L'onglet Export propose le téléchargement du planning généré au format CSV.
 
 Une version en ligne de commande est aussi disponible si tu préfères travailler dans le terminal :
 
-```powershell
+/powershell
 py main.py
-```
+/
 
 Et pour interroger directement la base Prolog dans un mode interactif :
 
-```powershell
+/powershell
 swipl -s smartscheduler.pl
-```
+/
 
 Une fois dans l'invite `?-`, tu peux tester par exemple `planning_valide.` pour vérifier que toutes les contraintes sont satisfaites, ou `afficher_planning.` pour afficher le planning séance par séance directement en console.
 
@@ -62,10 +61,6 @@ Enfin, `app.py` contient toute l'interface web Streamlit avec son thème sombre,
 
 Le dossier `tests/` contient les tests unitaires de la partie Prolog. Pour les lancer :
 
-```powershell
+/powershell
 swipl -g run_tests -t halt -s tests/test_scheduler.pl
-```
-
-## Auteurs
-
-Nour, étudiante en L2 Informatique.
+/
