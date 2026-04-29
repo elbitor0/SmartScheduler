@@ -67,24 +67,24 @@ def preparer_donnees(donnees):
         sg.append(idx_g[g])
 
     data = {
-        "nb_cours": nc,
-        "nb_profs": np,
-        "nb_salles": ns,
-        "nb_groupes": ng,
-        "nb_creneaux": ncr,
-        "nb_seances": len(sc),
+        "nbCours": nc,
+        "nbProfs": np,
+        "nbSalles": ns,
+        "nbGroupes": ng,
+        "nbCreneaux": ncr,
+        "nbSeances": len(sc),
 
-        "capacite_salle": cap,
-        "effectif_groupe": eff,
-        "groupe_suit_cours": g_suit,
-        "prof_peut_enseigner": p_ens,
-        "prof_disponible": p_dis,
-        "salle_compatible_cours": s_comp,
-        "jour_creneau": jours,
-        "heure_debut_creneau": heures,
+        "capaciteSalle": cap,
+        "tailleGroupe": eff,
+        "groupeSuitCours": g_suit,
+        "profPeutFaire": p_ens,
+        "profEstDispo": p_dis,
+        "salleOK": s_comp,
+        "jourCreneau": jours,
+        "heureDebut": heures,
 
-        "seance_cours": sc,
-        "seance_groupe": sg,
+        "seanceCours": sc,
+        "seanceGroupe": sg,
     }
 
     maps = {
@@ -119,13 +119,13 @@ def generer_emploi_du_temps(donnees, model_file="smartscheduler.mzn"):
 
     seances = []
 
-    for i in range(data["nb_seances"]):
+    for i in range(data["nbSeances"]):
         seances.append({
-            "cours": maps["cours"][data["seance_cours"][i]],
-            "groupe": maps["groupes"][data["seance_groupe"][i]],
-            "prof": maps["profs"][result["seance_prof"][i]],
-            "salle": maps["salles"][result["seance_salle"][i]],
-            "creneau": maps["creneaux"][result["seance_creneau"][i]],
+            "cours": maps["cours"][data["seanceCours"][i]],
+            "groupe": maps["groupes"][data["seanceGroupe"][i]],
+            "prof":    maps["profs"][result["profSeance"][i]],
+            "salle":   maps["salles"][result["salleSeance"][i]],
+            "creneau": maps["creneaux"][result["creneauSeance"][i]]
         })
 
     return seances
